@@ -2,6 +2,14 @@ package com.example.codeexistinterview.api.controller;
 
 import com.example.codeexistinterview.api.request.MapRequest;
 import com.example.codeexistinterview.api.resource.MapResponse;
+import com.example.codeexistinterview.config.ApplicationProperties;
+import com.example.codeexistinterview.service.map.MapService;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,15 +21,16 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/api")
 public class MapController {
 
-    /*@GetMapping("/save")
-    public void ElasticSearch(@RequestBody MapRequest mapRequest) {
-        // To Do
-    }
-*/
-    @GetMapping("/getLocation")
-    public MapResponse Location() {
-        ResponseEntity<MapResponse> response =new RestTemplate().getForEntity("https://maps.googleapis.com/maps/api/geocode/json?new_forward_geocoder=true&address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key={API_KEY}", MapResponse.class);
+    private final MapService mapService;
 
-        return response.getBody();
+    public MapController(MapService mapService) {
+        this.mapService = mapService;
+    }
+
+
+    @GetMapping("/getLocation")
+    public MapResponse Location(@RequestBody MapRequest mapRequest) {
+
+        return mapService.findLocationByLatLng(mapRequest);
     }
 }

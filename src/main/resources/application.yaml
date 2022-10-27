@@ -8,6 +8,5 @@ spring:
     hibernate:
       ddl-auto: update
       database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-
-google:
-  api-key: ${GOOLE_API_KEY}
+application:
+  google-api-key: ${GOOLE_API_KEY}

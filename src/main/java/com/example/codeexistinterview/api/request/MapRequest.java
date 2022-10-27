@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class MapRequest {
-    long longitude;
-    long latitude;
-    long radius;
+    private String longitude;
+    private String latitude;
+    private String radius;
 }

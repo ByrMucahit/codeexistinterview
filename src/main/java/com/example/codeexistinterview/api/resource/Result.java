@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class MapResource {
+public class Result {
 
     @JsonProperty("formatted_address")
     private String address;
