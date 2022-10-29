@@ -5,6 +5,8 @@ import com.example.codeexistinterview.api.resource.MapResponse;
 import com.example.codeexistinterview.api.resource.Result;
 import com.example.codeexistinterview.config.ApplicationProperties;
 import com.example.codeexistinterview.domain.geolocation.GeoLocation;
+import com.example.codeexistinterview.exception.GlobalExceptionHandler;
+import com.example.codeexistinterview.exception.PlaceIsNotFoundException;
 import com.example.codeexistinterview.repositories.geolocation.GeLocationRepository;
 import com.example.codeexistinterview.service.map.MapService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +34,11 @@ public class MapServiceImpl implements MapService {
         log.info("Checks Values User has entered");
         if(mapRequest.getLatitude() > 180.00 || mapRequest.getLatitude() < -180.00) {
             log.error("The value you have entered is not legal");
-            throw new IllegalArgumentException("The value you have entered is not legal");
+            throw new PlaceIsNotFoundException(mapRequest.getLongitude(), mapRequest.getLatitude());
         }
         if(mapRequest.getLongitude() > 180.00 || mapRequest.getLongitude() < -180.00) {
             log.error("The value you have entered is not legal");
-            throw new IllegalArgumentException("The value you have entered is not legal");
+            throw new PlaceIsNotFoundException(mapRequest.getLongitude(), mapRequest.getLatitude());
         }
     }
 
@@ -80,6 +84,7 @@ public class MapServiceImpl implements MapService {
                                     + mapRequest.getLongitude()
                                     + "&key=%s", applicationProperties.getGoogleApiKey())
                             , MapResponse.class);
+
             this.saveLocation(response.getBody().getResults()[0]);
 
             return response.getBody().getResults()[0];
