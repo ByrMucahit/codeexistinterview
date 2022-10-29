@@ -23,13 +23,30 @@ public class MapServiceImpl implements MapService {
     private final ApplicationProperties applicationProperties;
 
     private boolean checkLocationSaved(double latitude, double longitude) {
-        return geLocationRepository.existsByLatitudeAndLongitude(latitude, longitude);
+        return geLocationRepository.existsAllByLatitudeAndLongitude(latitude, longitude) ;
+    }
+
+    private void checkLongitudeLatitudeValue(MapRequest mapRequest) {
+        log.info("Checks Values User has entered");
+        if(mapRequest.getLatitude() > 180.00 || mapRequest.getLatitude() < -180.00) {
+            log.error("The value you have entered is not legal");
+            throw new IllegalArgumentException("The value you have entered is not legal");
+        }
+        if(mapRequest.getLongitude() > 180.00 || mapRequest.getLongitude() < -180.00) {
+            log.error("The value you have entered is not legal");
+            throw new IllegalArgumentException("The value you have entered is not legal");
+        }
     }
 
     @Override
     public GeoLocation findLocationByLatLng(MapRequest mapRequest) {
         log.info("Transaction starting...");
-        if (checkLocationSaved(mapRequest.getLatitude(), mapRequest.getLongitude())) {
+
+        this.checkLongitudeLatitudeValue(mapRequest);
+
+
+
+        if (checkLocationSaved(Double.valueOf(mapRequest.getLatitude()), Double.valueOf(mapRequest.getLongitude()))) {
             log.info("The result was saved before...");
             return findLocationFromDb(mapRequest);
         } else {
@@ -54,17 +71,22 @@ public class MapServiceImpl implements MapService {
     }
 
     private Result findLocationFromGoogleApi(MapRequest mapRequest) {
-        ResponseEntity<MapResponse> response = new RestTemplate()
-                .getForEntity(
-                        String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng="
-                                + mapRequest.getLatitude()
-                                + ","
-                                + mapRequest.getLongitude()
-                                + "&key=%s", applicationProperties.getGoogleApiKey())
-                        , MapResponse.class);
-        this.saveLocation(response.getBody().getResults()[0]);
+        try {
+            ResponseEntity<MapResponse> response = new RestTemplate()
+                    .getForEntity(
+                            String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng="
+                                    + mapRequest.getLatitude()
+                                    + ","
+                                    + mapRequest.getLongitude()
+                                    + "&key=%s", applicationProperties.getGoogleApiKey())
+                            , MapResponse.class);
+            this.saveLocation(response.getBody().getResults()[0]);
 
-        return response.getBody().getResults()[0];
+            return response.getBody().getResults()[0];
+        }
+        catch (Exception exception) {
+            throw new RuntimeException("There is no place");
+        }
     }
 
     private void saveLocation(Result result) {
