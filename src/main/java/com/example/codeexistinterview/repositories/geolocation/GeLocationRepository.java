@@ -10,6 +10,5 @@ public interface GeLocationRepository extends PagingAndSortingRepository<GeoLoca
     GeoLocation findByLatitudeAndLongitude(@Param("latitude") double latitude
             , @Param("longitude") double longitude);
 
-
-    boolean existsAllByLatitudeAndLongitude(@Param("latitude") double latitude, @Param("longitude") double longitude);
+    boolean existsByLatitudeAndLongitude(@Param("latitude") double latitude, @Param("longitude") double longitude);
 }

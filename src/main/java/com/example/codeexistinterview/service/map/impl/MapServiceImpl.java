@@ -27,7 +27,7 @@ public class MapServiceImpl implements MapService {
     private final ApplicationProperties applicationProperties;
 
     private boolean checkLocationSaved(double latitude, double longitude) {
-        return geLocationRepository.existsAllByLatitudeAndLongitude(latitude, longitude) ;
+        return geLocationRepository.existsByLatitudeAndLongitude(latitude, longitude) ;
     }
 
     private void checkLongitudeLatitudeValue(MapRequest mapRequest) {
@@ -47,8 +47,6 @@ public class MapServiceImpl implements MapService {
         log.info("Transaction starting...");
 
         this.checkLongitudeLatitudeValue(mapRequest);
-
-
 
         if (checkLocationSaved(Double.valueOf(mapRequest.getLatitude()), Double.valueOf(mapRequest.getLongitude()))) {
             log.info("The result was saved before...");

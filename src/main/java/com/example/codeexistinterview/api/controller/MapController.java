@@ -20,7 +20,6 @@ public class MapController {
         this.mapService = mapService;
     }
 
-
     @PostMapping("/getLocation")
     public GeoLocationResponse Location(@RequestBody MapRequest mapRequest) {
         GeoLocation location = mapService.findLocationByLatLng(mapRequest);
