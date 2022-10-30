@@ -10,3 +10,7 @@ spring:
       database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 application:
   google-api-key: ${GOOGLE_API_KEY}
+
+java:
+  runtime:
+    version: 11
