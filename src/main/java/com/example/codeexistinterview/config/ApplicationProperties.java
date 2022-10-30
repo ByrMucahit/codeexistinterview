@@ -15,4 +15,6 @@ public class ApplicationProperties {
 
     private String googleApiKey;
 
+    private String springDataSourceUrl;
+
 }
