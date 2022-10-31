@@ -16,4 +16,4 @@ java:
     version: 11
 
 server:
-  port: 8081
+  port: 8070
